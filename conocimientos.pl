@@ -500,16 +500,17 @@
     % *
     final_budget_cheap(BUDGET,TICKET,WEATHER,DISTANCE,OPINION,ROOMTYPE,FOOD,ROOM,NDAYS,RATE,VEHICLE).
 
-    % ? ======================== moderate plan
-    moderate(BUDGET):-write('You are in the moderate plan'), nl,
-    write('Type the minimun rate'), nl,
-    read(MINRATE),
-    write('Type your favorite weather'), nl,
-    read(WEATHER),
-    write('Type the maximun distance that are you willing to travel in your trip'),nl,
-    read(DISTANCE).
-    final_budget_moderate(BUDGET, MINRATE, WEATHER, DISTANCE).
+    % % ? ======================== moderate plan
+    % moderate(BUDGET):-write('You are in the moderate plan'), nl,
+    % write('Type the minimun rate'), nl,
+    % read(MINRATE),
+    % write('Type your favorite weather'), nl,
+    % read(WEATHER),
+    % write('Type the maximun distance that are you willing to travel in your trip'),nl,
+    % read(DISTANCE).
+    % final_budget_moderate(BUDGET, MINRATE, WEATHER, DISTANCE).
 
+    % ? ======================== expensive plan
     vip(BUDGET):-write('You are in the vip plan'), nl,
     write('Type your favorite weather'), nl,
     read(WEATHER),
@@ -518,77 +519,179 @@
     write('Do you want to have a personal chef?'),nl,
     read(CHEF).
 
-    % *
-    %final_budget_vip(BUDGET, WEATHER, ISFOREIGN, CHEF):-
-    %  write('Datos ingresados'), nl,
-     %   format('
-      %              Presupuesto: ~a
-       %             Idioma: ~a
-        %            Estrellas: ~a
-         %           Clima: ~a
-          %          Habitacion: ~a
-         %           Distancia: ~a
-         %           Dias: ~a
-         %           Vehiculo: ~a
 
-       % ', [BUDGET, LANGUAGE, RATE, WEATHER, ROOM, DISTANCIA, DIAS, VEHICULO]),
-       % fail,
-       % true.
-
+    % ? ======================== economic suggestion analysis 
 
     % * Economic plan analysis
     final_budget_cheap(BUDGET, TICKET, WEATHER, OPINION, DISTANCE, ROOMTYPE, FOOD, ROOM, NDAYS, RATE, VEHICLE) :-
         (
-            (ROOMTYPE == 'simple', VEHICLE == 'y') -> cheapsimple_yes_vehicle(BUDGET, TICKET, WEATHER, OPINION, DISTANCE, ROOMTYPE, FOOD, ROOM, NDAYS, RATE, VEHICLE)
-            % (ROOMTYPE == 'simple', VEHICLE == 'n') -> ;
-            % (ROOMTYPE == 'doble', VEHICLE == 'y') -> ;
-            % (ROOMTYPE == 'doble', VEHICLE == 'n') ->
+            (ROOMTYPE == 'simple', VEHICLE == 'y') ->    cheapsimple_yes_vehicle(BUDGET, TICKET, WEATHER, OPINION, DISTANCE, ROOMTYPE, FOOD, ROOM, NDAYS, RATE, VEHICLE);
+            (ROOMTYPE == 'simple', VEHICLE == 'n') ->    cheapsimple_no_vehicle(BUDGET, TICKET, WEATHER, OPINION, DISTANCE, ROOMTYPE, FOOD, ROOM, NDAYS, RATE, VEHICLE);
+            (ROOMTYPE == 'doble', VEHICLE == 'y')  ->    cheapdouble_yes_vehicle(BUDGET, TICKET, WEATHER, OPINION, DISTANCE, ROOMTYPE, FOOD, ROOM, NDAYS, RATE, VEHICLE);
+            (ROOMTYPE == 'doble', VEHICLE == 'n')  ->    cheapdouble_no_vehicle(BUDGET, TICKET, WEATHER, OPINION, DISTANCE, ROOMTYPE, FOOD, ROOM, NDAYS, RATE, VEHICLE)
         ).
 
-    cheapsimple_yes_vehicle(BUDGET, TICKET, WEATHER, OPINION, DISTANCE, ROOMTYPE, FOOD, ROOM, NDAYS, RATE, VEHICLE) :-
-    departamento(IDdep, Nombred, _, _, Climad, _),
-    hotel(IDhotel, Nombreh, Direccion, EstrellasH, HsimpleAtom, _, Pcomida, IDdep, Distanciah),
 
-    CostoGasolina is (DISTANCE * 12.5) * 2,
-    % atom_number(HsimpleAtom, Hsimple),  % Convertir Hsimple a número
-    % atom_number(Pcomida, PcomidaNum),  % Convertir Pcomida a número
-    CostoComida is (3 * FOOD * NDAYS),
-    CostoHabitacion is (ROOM * NDAYS),
-    Sumatoria is CostoGasolina + CostoComida + CostoHabitacion,
+    % * ============================ SIMPLE ROOM AND VEHICLE ============================
+        cheapsimple_yes_vehicle(BUDGET, TICKET, WEATHER, OPINION, DISTANCE, ROOMTYPE, FOOD, ROOM, NDAYS, RATE, VEHICLE) :-
+        departamento(IDdep, Nombred, _, _, Climad, _),
+        hotel(IDhotel, Nombreh, Direccion, EstrellasH, HsimpleAtom, _, Pcomida, IDdep, Distanciah),
 
-    write('Comparacion de DISTANCIA y Distanciah: '), write(DISTANCE), write(' y '), write(Distanciah), nl,
-    DISTANCE =< Distanciah,
+        CostoGasolina is (DISTANCE * 12.5) * 2,
+        % atom_number(HsimpleAtom, Hsimple),  % Convertir Hsimple a número
+        % atom_number(Pcomida, PcomidaNum),  % Convertir Pcomida a número
+        CostoComida is (3 * FOOD * NDAYS),
+        CostoHabitacion is (ROOM * NDAYS),
+        Sumatoria is CostoGasolina + CostoComida + CostoHabitacion,
 
-    write('Comparacion de CLIMA y Climad: '), write(WEATHER), write(' y '), write(Climad), nl,
-    WEATHER == Climad,
+        %write('Comparacion de DISTANCIA y Distanciah: '), write(DISTANCE), write(' y '), write(Distanciah), nl,
+        DISTANCE =< Distanciah,
 
-    write('Comparacion de EstrellasH y ESTRELLAS: '), write(RATE), write(' y '), write(EstrellasH), nl,
-    EstrellasH == RATE,
+        %write('Comparacion de CLIMA y Climad: '), write(WEATHER), write(' y '), write(Climad), nl,
+        WEATHER == Climad,
 
-    write('Comparacion de Sumatoria y PRESUPUESTO: '), write(Sumatoria), write(' y '), write(BUDGET), nl,
-    Sumatoria =< BUDGET,
+        %write('Comparacion de EstrellasH y ESTRELLAS: '), write(RATE), write(' y '), write(EstrellasH), nl,
+        EstrellasH == RATE,
 
+        %write('Comparacion de Sumatoria y PRESUPUESTO: '), write(Sumatoria), write(' y '), write(BUDGET), nl,
+        Sumatoria =< BUDGET,
 
+        finaleconomicbudget1(DISTANCE, WEATHER, HsimpleAtom, Sumatoria, Nombreh, NDAYS, ROOM, FOOD, VEHICLE). 
+        finaleconomicbudget1(DISTANCE, WEATHER, HsimpleAtom, Sumatoria, Nombreh, NDAYS, ROOM, FOOD, VEHICLE) :-
+        write('******** This is your suggestion for simple room / vehicle plan ********'), nl,
+        format('
+                    Distance: ~a
+                    Weather: ~a
+                    HotelName: ~a
+                    RoomType: ~a
+                    TotalCost: ~a
+                    CostoHabitacion: ~a
+                    FoodCost: ~a
+                    Dias: ~a
+                    Vehiculo: ~a
 
-    presupuestofinalbarato(DISTANCE, WEATHER, HsimpleAtom, Sumatoria, Nombreh, NDAYS, ROOM, FOOD, VEHICLE).  % Llamada al segundo predicado
-    presupuestofinalbarato(DISTANCE, WEATHER, HsimpleAtom, Sumatoria, Nombreh, NDAYS, ROOM, FOOD, VEHICLE) :-
-    write('Presupuesto Barato'), nl,
-    format('
-                Distance: ~a
-                Weather: ~a
-                HotelName: ~a
-                RoomType: ~a
-                TotalCost: ~a
-                CostoHabitacion: ~a
-                FoodCost: ~a
-                Dias: ~a
-                Vehiculo: ~a
-
-    ', [DISTANCE, WEATHER, HsimpleAtom, Sumatoria, Nombreh, NDAYS, ROOM, FOOD, VEHICLE]).
-
-
+        ', [DISTANCE, WEATHER, HsimpleAtom, Sumatoria, Nombreh, NDAYS, ROOM, FOOD, VEHICLE]).
 
 
+    % * ============================ SIMPLE ROOM AND NO VEHICLE ============================
+        cheapsimple_no_vehicle(BUDGET, TICKET, WEATHER, OPINION, DISTANCE, ROOMTYPE, FOOD, ROOM, NDAYS, RATE, VEHICLE) :-
+        departamento(IDdep, Nombred, _, _, Climad, _),
+        hotel(IDhotel, Nombreh, Direccion, EstrellasH, HsimpleAtom, _, Pcomida, IDdep, Distanciah),
+
+        CostoGasolina is (DISTANCE * 12.5) * 2,
+        % atom_number(HsimpleAtom, Hsimple),  % Convertir Hsimple a número
+        % atom_number(Pcomida, PcomidaNum),  % Convertir Pcomida a número
+        CostoComida is (3 * FOOD * NDAYS),
+        CostoHabitacion is (ROOM * NDAYS),
+        Sumatoria is CostoGasolina + CostoComida + CostoHabitacion,
+
+        %write('Comparacion de DISTANCIA y Distanciah: '), write(DISTANCE), write(' y '), write(Distanciah), nl,
+        DISTANCE =< Distanciah,
+
+        %write('Comparacion de CLIMA y Climad: '), write(WEATHER), write(' y '), write(Climad), nl,
+        WEATHER == Climad,
+
+        %write('Comparacion de EstrellasH y ESTRELLAS: '), write(RATE), write(' y '), write(EstrellasH), nl,
+        EstrellasH == RATE,
+
+        %write('Comparacion de Sumatoria y PRESUPUESTO: '), write(Sumatoria), write(' y '), write(BUDGET), nl,
+        Sumatoria =< BUDGET,
+
+        finaleconomicbudget2(DISTANCE, WEATHER, HsimpleAtom, Sumatoria, Nombreh, NDAYS, ROOM, FOOD, VEHICLE). 
+        finaleconomicbudget2(DISTANCE, WEATHER, HsimpleAtom, Sumatoria, Nombreh, NDAYS, ROOM, FOOD, VEHICLE) :-
+        write('******** This is your suggestion for simple room / no vehicle plan ********'), nl,
+        format('
+                    Distance: ~a
+                    Weather: ~a
+                    HotelName: ~a
+                    RoomType: ~a
+                    TotalCost: ~a
+                    CostoHabitacion: ~a
+                    FoodCost: ~a
+                    Dias: ~a
+                    Vehiculo: ~a
+
+        ', [DISTANCE, WEATHER, HsimpleAtom, Sumatoria, Nombreh, NDAYS, ROOM, FOOD, VEHICLE]).
+
+    % * ============================ DOUBLE ROOM AND VEHICLE ============================
+        cheapdouble_yes_vehicle(BUDGET, TICKET, WEATHER, OPINION, DISTANCE, ROOMTYPE, FOOD, ROOM, NDAYS, RATE, VEHICLE) :-
+        departamento(IDdep, Nombred, _, _, Climad, _),
+        hotel(IDhotel, Nombreh, Direccion, EstrellasH, HsimpleAtom, _, Pcomida, IDdep, Distanciah),
+
+        CostoGasolina is (DISTANCE * 12.5) * 2,
+        % atom_number(HsimpleAtom, Hsimple),  % Convertir Hsimple a número
+        % atom_number(Pcomida, PcomidaNum),  % Convertir Pcomida a número
+        CostoComida is (3 * FOOD * NDAYS),
+        CostoHabitacion is (ROOM * NDAYS),
+        Sumatoria is CostoGasolina + CostoComida + CostoHabitacion,
+
+        %write('Comparacion de DISTANCIA y Distanciah: '), write(DISTANCE), write(' y '), write(Distanciah), nl,
+        DISTANCE =< Distanciah,
+
+        %write('Comparacion de CLIMA y Climad: '), write(WEATHER), write(' y '), write(Climad), nl,
+        WEATHER == Climad,
+
+        %write('Comparacion de EstrellasH y ESTRELLAS: '), write(RATE), write(' y '), write(EstrellasH), nl,
+        EstrellasH == RATE,
+
+        %write('Comparacion de Sumatoria y PRESUPUESTO: '), write(Sumatoria), write(' y '), write(BUDGET), nl,
+        Sumatoria =< BUDGET,
+
+        finaleconomicbudget3(DISTANCE, WEATHER, HsimpleAtom, Sumatoria, Nombreh, NDAYS, ROOM, FOOD, VEHICLE). 
+        finaleconomicbudget3(DISTANCE, WEATHER, HsimpleAtom, Sumatoria, Nombreh, NDAYS, ROOM, FOOD, VEHICLE) :-
+        write('******** This is your suggestion for a double / vehicle plan ********'), nl,
+        format('
+                    Distance: ~a
+                    Weather: ~a
+                    HotelName: ~a
+                    RoomType: ~a
+                    TotalCost: ~a
+                    CostoHabitacion: ~a
+                    FoodCost: ~a
+                    Dias: ~a
+                    Vehiculo: ~a
+
+        ', [DISTANCE, WEATHER, HsimpleAtom, Sumatoria, Nombreh, NDAYS, ROOM, FOOD, VEHICLE]).
+
+    % * ============================ DOUBLE ROOM AND NO VEHICLE ============================
+        cheapdouble_no_vehicle(BUDGET, TICKET, WEATHER, OPINION, DISTANCE, ROOMTYPE, FOOD, ROOM, NDAYS, RATE, VEHICLE) :-
+        departamento(IDdep, Nombred, _, _, Climad, _),
+        hotel(IDhotel, Nombreh, Direccion, EstrellasH, HsimpleAtom, _, Pcomida, IDdep, Distanciah),
+
+        CostoGasolina is (DISTANCE * 12.5) * 2,
+        % atom_number(HsimpleAtom, Hsimple),  % Convertir Hsimple a número
+        % atom_number(Pcomida, PcomidaNum),  % Convertir Pcomida a número
+        CostoComida is (3 * FOOD * NDAYS),
+        CostoHabitacion is (ROOM * NDAYS),
+        Sumatoria is CostoGasolina + CostoComida + CostoHabitacion,
+
+        %write('Comparacion de DISTANCIA y Distanciah: '), write(DISTANCE), write(' y '), write(Distanciah), nl,
+        DISTANCE =< Distanciah,
+
+        %write('Comparacion de CLIMA y Climad: '), write(WEATHER), write(' y '), write(Climad), nl,
+        WEATHER == Climad,
+
+        %write('Comparacion de EstrellasH y ESTRELLAS: '), write(RATE), write(' y '), write(EstrellasH), nl,
+        EstrellasH == RATE,
+
+        %write('Comparacion de Sumatoria y PRESUPUESTO: '), write(Sumatoria), write(' y '), write(BUDGET), nl,
+        Sumatoria =< BUDGET,
+
+        finaleconomicbudget4(DISTANCE, WEATHER, HsimpleAtom, Sumatoria, Nombreh, NDAYS, ROOM, FOOD, VEHICLE). 
+        finaleconomicbudget4(DISTANCE, WEATHER, HsimpleAtom, Sumatoria, Nombreh, NDAYS, ROOM, FOOD, VEHICLE) :-
+        write('******** This is your suggestion for a double / no vehicle plan ********'), nl,
+        format('
+                    Distance: ~a
+                    Weather: ~a
+                    HotelName: ~a
+                    RoomType: ~a
+                    TotalCost: ~a
+                    CostoHabitacion: ~a
+                    FoodCost: ~a
+                    Dias: ~a
+                    Vehiculo: ~a
+
+        ', [DISTANCE, WEATHER, HsimpleAtom, Sumatoria, Nombreh, NDAYS, ROOM, FOOD, VEHICLE]).
 
 
-
+    % ? ======================== expensive suggestion analysis 
