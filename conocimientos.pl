@@ -90,7 +90,7 @@
 
 
 % * ==========================================================
-% * hecho registro
+% * hecho registro(idregistro,cliente,hotel,fecharegistro,estadia,opinion)
     registro(1, 10, 30, '10/01/2021', 4, 3).
     registro(2, 10, 30, '8/04/2022', 2, 5).
     registro(3, 10, 31, '2/07/2022', 5, 5).
@@ -137,7 +137,7 @@
 
 
 % * ==========================================================
-% * hecho trabajador
+% * hecho trabajador(idtrabajador,nombre,cargo, id_hotel)
     trabajador(1, 'Jose Hernandez', 'Chef', 1).
     trabajador(2, 'Maria Loarca', 'Mesera', 1).
     trabajador(3, 'Julio Ortega', 'Administrador', 1).
@@ -455,7 +455,7 @@
     opcion(SELECCION):-(
         SELECCION == 1 -> budget;
         SELECCION == 2 -> language;
-        SELECCION == 3 -> stars;
+        SELECCION == 3 -> rating;
         SELECCION == 4 -> weather).
 
 
@@ -472,7 +472,45 @@
         moderate(BUDGET)
     ).
 
+    % ? ======================== Language path ========================
+    language:-write('* Select your language [espanol, katchikel, ingles]'), nl,
+    read(LANGUAGE),
+    language_separator(LANGUAGE).
 
+
+    %? ======================== check language ========================
+    language_separator(LANGUAGE):-(
+        LANGUAGE == 'espanol' ->    hotel_language_selection(LANGUAGE);
+        LANGUAGE == 'katchikel' ->  hotel_language_selection(LANGUAGE);
+        LANGUAGE == 'ingles' ->     hotel_language_selection(LANGUAGE)
+    ).
+
+    % ? ======================== Rating path (stars) ========================
+    rating:-write('* Select your rating [1 to 5]'), nl,
+    read(RATING),
+    rating_separator(RATING).
+
+
+    rating_separator(RATING):-(
+        RATING == 1 -> hotel_rating_selection(RATING);
+        RATING == 2 -> hotel_rating_selection(RATING);
+        RATING == 3 -> hotel_rating_selection(RATING);
+        RATING == 4 -> hotel_rating_selection(RATING);
+        RATING == 5 -> hotel_rating_selection(RATING)
+    ).
+
+    % ? ======================== weather path (stars) ========================
+    weather:-write('* Select your weather [tropical, calor, frio, templado]'), nl,
+    read(WEATHER),
+    weather_separator(WEATHER).
+
+
+    weather_separator(WEATHER):-(
+        WEATHER == 'tropical'    -> hotel_weather_selection(WEATHER);
+        WEATHER == 'calor'       -> hotel_weather_selection(WEATHER);
+        WEATHER == 'frio'        -> hotel_weather_selection(WEATHER);
+        WEATHER == 'templado'    -> hotel_weather_selection(WEATHER)
+    ).
 
     % ? ======================== economic plan
     cheap(BUDGET):-write('You are in the economic plan'), nl,
@@ -500,25 +538,29 @@
     % *
     final_budget_cheap(BUDGET,TICKET,WEATHER,DISTANCE,OPINION,ROOMTYPE,FOOD,ROOM,NDAYS,RATE,VEHICLE).
 
-    % % ? ======================== moderate plan
-    % moderate(BUDGET):-write('You are in the moderate plan'), nl,
-    % write('Type the minimun rate'), nl,
-    % read(MINRATE),
-    % write('Type your favorite weather'), nl,
-    % read(WEATHER),
-    % write('Type the maximun distance that are you willing to travel in your trip'),nl,
-    % read(DISTANCE).
-    % final_budget_moderate(BUDGET, MINRATE, WEATHER, DISTANCE).
-
     % ? ======================== expensive plan
     vip(BUDGET):-write('You are in the vip plan'), nl,
-    write('Type your favorite weather'), nl,
-    read(WEATHER),
-    write('Type your born country'), nl,
-    read(ISFOREIGN),
-    write('Do you want to have a personal chef?'),nl,
-    read(CHEF).
-
+        write('Type the maximun price that you are willing to pay'), nl,
+        read(TICKET),
+        write('Type your favorite weather'), nl,
+        read(WEATHER),
+        write('Type the opinion that you want to search'), nl,
+        read(OPINION),
+        write('What kind of room do you want? (simple / double)'), nl,
+        read(ROOMTYPE),
+        write('Type the maximun distance that are you willing to travel in your trip'),nl,
+        read(DISTANCE),
+        write('Type the maximun price that you are willing to pay in each meal'), nl,
+        read(FOOD),
+        write('Type the maximun price that you are willing to pay for one room'), nl,
+        read(ROOM),
+        write('How many days do you want to stay?'), nl,
+        read(NDAYS),
+        write('Type the minimun valuation of a hotel'), nl,
+        read(RATE),
+        write('Do you have a vehicle? y/n'), nl,
+        read(VEHICLE),
+        final_budget_expensive(BUDGET, TICKET, WEATHER, OPINION, DISTANCE, ROOMTYPE, FOOD, ROOM, NDAYS, RATE, VEHICLE).
 
     % ? ======================== economic suggestion analysis 
 
@@ -532,7 +574,7 @@
         ).
 
 
-    % * ============================ SIMPLE ROOM AND VEHICLE ============================
+    % * ============================ SIMPLE ROOM AND VEHICLE    ============================
         cheapsimple_yes_vehicle(BUDGET, TICKET, WEATHER, OPINION, DISTANCE, ROOMTYPE, FOOD, ROOM, NDAYS, RATE, VEHICLE) :-
         departamento(IDdep, Nombred, _, _, Climad, _),
         hotel(IDhotel, Nombreh, Direccion, EstrellasH, HsimpleAtom, _, Pcomida, IDdep, Distanciah),
@@ -613,7 +655,7 @@
 
         ', [DISTANCE, WEATHER, HsimpleAtom, Sumatoria, Nombreh, NDAYS, ROOM, FOOD, VEHICLE]).
 
-    % * ============================ DOUBLE ROOM AND VEHICLE ============================
+    % * ============================ DOUBLE ROOM AND VEHICLE    ============================
         cheapdouble_yes_vehicle(BUDGET, TICKET, WEATHER, OPINION, DISTANCE, ROOMTYPE, FOOD, ROOM, NDAYS, RATE, VEHICLE) :-
         departamento(IDdep, Nombred, _, _, Climad, _),
         hotel(IDhotel, Nombreh, Direccion, EstrellasH, HsimpleAtom, _, Pcomida, IDdep, Distanciah),
@@ -693,5 +735,296 @@
 
         ', [DISTANCE, WEATHER, HsimpleAtom, Sumatoria, Nombreh, NDAYS, ROOM, FOOD, VEHICLE]).
 
+    
 
     % ? ======================== expensive suggestion analysis 
+    final_budget_expensive(BUDGET, TICKET, WEATHER, OPINION, DISTANCE, ROOMTYPE, FOOD, ROOM, NDAYS, RATE, VEHICLE) :-
+        (
+            (ROOMTYPE == 'simple', VEHICLE == 'y') ->  expensivesimple_yes_vehicle(BUDGET, TICKET, WEATHER, OPINION, DISTANCE, ROOMTYPE, FOOD, ROOM, NDAYS, RATE, VEHICLE);
+            (ROOMTYPE == 'simple', VEHICLE == 'n') ->  expensivesimple_no_vehicle(BUDGET, TICKET, WEATHER, OPINION, DISTANCE, ROOMTYPE, FOOD, ROOM, NDAYS, RATE, VEHICLE);
+            (ROOMTYPE == 'double', VEHICLE == 'y') ->  expensivedouble_yes_vehicle(BUDGET, TICKET, WEATHER, OPINION, DISTANCE, ROOMTYPE, FOOD, ROOM, NDAYS, RATE, VEHICLE);
+            (ROOMTYPE == 'double', VEHICLE == 'n') ->  expensivedouble_no_vehicle(BUDGET, TICKET, WEATHER, OPINION, DISTANCE, ROOMTYPE, FOOD, ROOM, NDAYS, RATE, VEHICLE)
+        ).
+
+
+
+    expensivesimple_yes_vehicle(BUDGET, TICKET, WEATHER, OPINION, DISTANCE, ROOMTYPE, FOOD, ROOM, NDAYS, RATE, VEHICLE) :-
+        departamento(IDdep, Nombred, _, _, Climad, _),
+        write('executing... '), nl,
+        hotel(IDhotel, Nombreh, Direccion, EstrellasH, HsimpleAtom, _, Pcomida, IDdep, Distanciah),
+
+        CostoGasolina is (DISTANCE * 12.5) * 2,
+        % atom_number(HsimpleAtom, Hsimple),  % Convertir Hsimple a número
+        % atom_number(Pcomida, PcomidaNum),  % Convertir Pcomida a número
+        CostoComida is (3 * FOOD * NDAYS),
+        CostoHabitacion is (ROOM * NDAYS),
+        Sumatoria is CostoGasolina + CostoComida + CostoHabitacion,
+
+        %write('Comparacion de DISTANCIA y Distanciah: '), write(DISTANCE), write(' y '), write(Distanciah), nl,
+        DISTANCE =< Distanciah,
+
+        %write('Comparacion de CLIMA y Climad: '), write(WEATHER), write(' y '), write(Climad), nl,
+        WEATHER == Climad,
+
+        %write('Comparacion de EstrellasH y ESTRELLAS: '), write(RATE), write(' y '), write(EstrellasH), nl,
+        EstrellasH == RATE,
+
+        %write('Comparacion de Sumatoria y PRESUPUESTO: '), write(Sumatoria), write(' y '), write(BUDGET), nl,
+        Sumatoria =< BUDGET,
+
+        finalexpensivebudget1(DISTANCE, WEATHER, HsimpleAtom, Sumatoria, Nombreh, NDAYS, ROOM, FOOD, VEHICLE). 
+        finalexpensivebudget1(DISTANCE, WEATHER, HsimpleAtom, Sumatoria, Nombreh, NDAYS, ROOM, FOOD, VEHICLE) :-
+        write('******** This is your suggestion for simple room / vehicle plan ********'), nl,
+        format('
+                    Distance: ~a
+                    Weather: ~a
+                    HotelName: ~a
+                    RoomType: ~a
+                    TotalCost: ~a
+                    CostoHabitacion: ~a
+                    FoodCost: ~a
+                    Dias: ~a
+                    Vehiculo: ~a
+
+        ', [DISTANCE, WEATHER, HsimpleAtom, Sumatoria, Nombreh, NDAYS, ROOM, FOOD, VEHICLE]).
+
+
+        expensivesimple_no_vehicle(BUDGET, TICKET, WEATHER, OPINION, DISTANCE, ROOMTYPE, FOOD, ROOM, NDAYS, RATE, VEHICLE) :-
+            departamento(IDdep, Nombred, _, _, Climad, _),
+            write('executing... '), nl,
+            hotel(IDhotel, Nombreh, Direccion, EstrellasH, HsimpleAtom, _, Pcomida, IDdep, Distanciah),
+
+            CostoGasolina is (DISTANCE * 12.5) * 2,
+            % atom_number(HsimpleAtom, Hsimple),  % Convertir Hsimple a número
+            % atom_number(Pcomida, PcomidaNum),  % Convertir Pcomida a número
+            CostoComida is (3 * FOOD * NDAYS),
+            CostoHabitacion is (ROOM * NDAYS),
+            Sumatoria is CostoGasolina + CostoComida + CostoHabitacion,
+
+            %write('Comparacion de DISTANCIA y Distanciah: '), write(DISTANCE), write(' y '), write(Distanciah), nl,
+            DISTANCE =< Distanciah,
+
+            %write('Comparacion de CLIMA y Climad: '), write(WEATHER), write(' y '), write(Climad), nl,
+            WEATHER == Climad,
+
+            %write('Comparacion de EstrellasH y ESTRELLAS: '), write(RATE), write(' y '), write(EstrellasH), nl,
+            EstrellasH == RATE,
+
+            %write('Comparacion de Sumatoria y PRESUPUESTO: '), write(Sumatoria), write(' y '), write(BUDGET), nl,
+            Sumatoria =< BUDGET,
+
+            finalexpensivebudget1(DISTANCE, WEATHER, HsimpleAtom, Sumatoria, Nombreh, NDAYS, ROOM, FOOD, VEHICLE). 
+            finalexpensivebudget1(DISTANCE, WEATHER, HsimpleAtom, Sumatoria, Nombreh, NDAYS, ROOM, FOOD, VEHICLE) :-
+            write('******** This is your suggestion for simple room / vehicle plan ********'), nl,
+            format('
+                        Distance: ~a
+                        Weather: ~a
+                        HotelName: ~a
+                        RoomType: ~a
+                        TotalCost: ~a
+                        CostoHabitacion: ~a
+                        FoodCost: ~a
+                        Dias: ~a
+                        Vehiculo: ~a
+
+            ', [DISTANCE, WEATHER, HsimpleAtom, Sumatoria, Nombreh, NDAYS, ROOM, FOOD, VEHICLE]).
+
+
+
+
+    % --
+
+
+
+    % * ============================ Language ============================
+    hotel_language_selection(LANGUAGE):-write('You are selecting by language'), nl,
+        write('Type the maximun price that you are willing to pay'), nl,
+        read(TICKET),
+        write('Type your favorite weather'), nl,
+        read(WEATHER),
+        write('Type the opinion that you want to search'), nl,
+        read(OPINION),
+        write('What kind of room do you want? (simple / double)'), nl,
+        read(ROOMTYPE),
+        write('Type the maximun distance that are you willing to travel in your trip'),nl,
+        read(DISTANCE),
+        write('Type the maximun price that you are willing to pay in each meal'), nl,
+        read(FOOD),
+        write('Type the maximun price that you are willing to pay for one room'), nl,
+        read(ROOM),
+        write('How many days do you want to stay?'), nl,
+        read(NDAYS),
+        write('Type the minimun valuation of a hotel'), nl,
+        read(RATE),
+        write('Do you have a vehicle? y/n'), nl,
+        read(VEHICLE),
+        language_hotel_selection(LANGUAGE, TICKET, WEATHER, OPINION, DISTANCE, ROOMTYPE, FOOD, ROOM, NDAYS, RATE, VEHICLE).
+
+
+    language_hotel_selection(LANGUAGE, TICKET, WEATHER, OPINION, DISTANCE, ROOMTYPE, FOOD, ROOM, NDAYS, RATE, VEHICLE) :-
+        departamento(IDdep, Nombred, _, LANGUAGE, Climad, _),
+        hotel(IDhotel, Nombreh, Direccion, EstrellasH, HsimpleAtom, _, Pcomida, IDdep, Distanciah),
+
+        CostoGasolina is (DISTANCE * 12.5) * 2,
+        % atom_number(HsimpleAtom, Hsimple),  % Convertir Hsimple a número
+        % atom_number(Pcomida, PcomidaNum),  % Convertir Pcomida a número
+        CostoComida is (3 * FOOD * NDAYS),
+        CostoHabitacion is (ROOM * NDAYS),
+        Sumatoria is CostoGasolina + CostoComida + CostoHabitacion,
+
+        %write('Comparacion de DISTANCIA y Distanciah: '), write(DISTANCE), write(' y '), write(Distanciah), nl,
+        DISTANCE =< Distanciah,
+
+        %write('Comparacion de CLIMA y Climad: '), write(WEATHER), write(' y '), write(Climad), nl,
+        WEATHER == Climad,
+
+        %write('Comparacion de EstrellasH y ESTRELLAS: '), write(RATE), write(' y '), write(EstrellasH), nl,
+        EstrellasH == RATE,
+
+
+        % %write('Comparacion de Sumatoria y PRESUPUESTO: '), write(Sumatoria), write(' y '), write(BUDGET), nl,
+        % Sumatoria =< BUDGET,
+
+        finalhotellanguage(DISTANCE, WEATHER, HsimpleAtom, Sumatoria, Nombreh, NDAYS, ROOM, FOOD, VEHICLE). 
+        finalhotellanguage(DISTANCE, WEATHER, HsimpleAtom, Sumatoria, Nombreh, NDAYS, ROOM, FOOD, VEHICLE) :-
+        write('******** Suggestion made based by language ********'), nl,
+        format('
+                    Distance: ~a
+                    Weather: ~a
+                    HotelName: ~a
+                    RoomType: ~a
+                    TotalCost: ~a
+                    CostoHabitacion: ~a
+                    FoodCost: ~a
+                    Dias: ~a
+                    Vehiculo: ~a
+
+        ', [DISTANCE, WEATHER, HsimpleAtom, Sumatoria, Nombreh, NDAYS, ROOM, FOOD, VEHICLE]).
+
+
+
+    % * ============================ By Rating ============================
+    hotel_rating_selection(RATING):-write('You are selecting by rating'), nl,
+        write('Type the maximun price that you are willing to pay'), nl,
+        read(TICKET),
+        write('Type your favorite weather'), nl,
+        read(WEATHER),
+        write('Type the opinion that you want to search'), nl,
+        read(OPINION),
+        write('What kind of room do you want? (simple / double)'), nl,
+        read(ROOMTYPE),
+        write('Type the maximun distance that are you willing to travel in your trip'),nl,
+        read(DISTANCE),
+        write('Type the maximun price that you are willing to pay in each meal'), nl,
+        read(FOOD),
+        write('Type the maximun price that you are willing to pay for one room'), nl,
+        read(ROOM),
+        write('How many days do you want to stay?'), nl,
+        read(NDAYS),
+        write('Do you have a vehicle? y/n'), nl,
+        read(VEHICLE),
+        rating_hotel_selection(LANGUAGE, TICKET, WEATHER, OPINION, DISTANCE, ROOMTYPE, FOOD, ROOM, NDAYS, RATING, VEHICLE).
+
+
+        rating_hotel_selection(LANGUAGE, TICKET, WEATHER, OPINION, DISTANCE, ROOMTYPE, FOOD, ROOM, NDAYS, RATING, VEHICLE) :-
+            departamento(IDdep, Nombred, _, LANGUAGE, Climad, _),
+            hotel(IDhotel, Nombreh, Direccion, EstrellasH, HsimpleAtom, _, Pcomida, IDdep, Distanciah),
+
+            CostoGasolina is (DISTANCE * 12.5) * 2,
+            % atom_number(HsimpleAtom, Hsimple),  % Convertir Hsimple a número
+            % atom_number(Pcomida, PcomidaNum),  % Convertir Pcomida a número
+            CostoComida is (3 * FOOD * NDAYS),
+            CostoHabitacion is (ROOM * NDAYS),
+            Sumatoria is CostoGasolina + CostoComida + CostoHabitacion,
+
+            %write('Comparacion de DISTANCIA y Distanciah: '), write(DISTANCE), write(' y '), write(Distanciah), nl,
+            DISTANCE =< Distanciah,
+
+            %write('Comparacion de CLIMA y Climad: '), write(WEATHER), write(' y '), write(Climad), nl,
+            WEATHER == Climad,
+
+            %write('Comparacion de EstrellasH y ESTRELLAS: '), write(RATE), write(' y '), write(EstrellasH), nl,
+            EstrellasH == RATING,
+
+
+            % %write('Comparacion de Sumatoria y PRESUPUESTO: '), write(Sumatoria), write(' y '), write(BUDGET), nl,
+            % Sumatoria =< BUDGET,
+
+            finalhotelrating(DISTANCE, WEATHER, HsimpleAtom, Sumatoria, Nombreh, NDAYS, ROOM, FOOD, VEHICLE). 
+            finalhotelrating(DISTANCE, WEATHER, HsimpleAtom, Sumatoria, Nombreh, NDAYS, ROOM, FOOD, VEHICLE) :-
+            write('******** Suggestion made based by rating ********'), nl,
+            format('
+                        Distance: ~a
+                        Weather: ~a
+                        TotalRoomCost: ~a
+                        TotalCost: ~a
+                        HotelName: ~a
+                        Days: ~a
+                        CostPerRoom: ~a
+                        FoodCost: ~a
+                        Vehiculo: ~a
+
+            ', [DISTANCE, WEATHER, HsimpleAtom, Sumatoria, Nombreh, NDAYS, ROOM, FOOD, VEHICLE]).
+
+
+
+    % * ============================ By weather ============================
+    hotel_weather_selection(RATING):-write('You are selecting by weather'), nl,
+        write('Type the maximun price that you are willing to pay'), nl,
+        read(TICKET),
+        write('Type the opinion that you want to search'), nl,
+        read(OPINION),
+        write('What kind of room do you want? (simple / double)'), nl,
+        read(ROOMTYPE),
+        write('Type the maximun distance that are you willing to travel in your trip'),nl,
+        read(DISTANCE),
+        write('Type the maximun price that you are willing to pay in each meal'), nl,
+        read(FOOD),
+        write('Type the maximun price that you are willing to pay for one room'), nl,
+        read(ROOM),
+        write('How many days do you want to stay?'), nl,
+        read(NDAYS),
+        write('Do you have a vehicle? y/n'), nl,
+        read(VEHICLE),
+        weather_hotel_selection(LANGUAGE, TICKET, WEATHER, OPINION, DISTANCE, ROOMTYPE, FOOD, ROOM, NDAYS, RATING, VEHICLE).
+
+
+        weather_hotel_selection(LANGUAGE, TICKET, WEATHER, OPINION, DISTANCE, ROOMTYPE, FOOD, ROOM, NDAYS, RATING, VEHICLE) :-
+            departamento(IDdep, Nombred, _, LANGUAGE, Climad, _),
+            hotel(IDhotel, Nombreh, Direccion, EstrellasH, HsimpleAtom, _, Pcomida, IDdep, Distanciah),
+
+            CostoGasolina is (DISTANCE * 12.5) * 2,
+            % atom_number(HsimpleAtom, Hsimple),  % Convertir Hsimple a número
+            % atom_number(Pcomida, PcomidaNum),  % Convertir Pcomida a número
+            CostoComida is (3 * FOOD * NDAYS),
+            CostoHabitacion is (ROOM * NDAYS),
+            Sumatoria is CostoGasolina + CostoComida + CostoHabitacion,
+
+            %write('Comparacion de DISTANCIA y Distanciah: '), write(DISTANCE), write(' y '), write(Distanciah), nl,
+            DISTANCE =< Distanciah,
+
+            %write('Comparacion de CLIMA y Climad: '), write(WEATHER), write(' y '), write(Climad), nl,
+            WEATHER == Climad,
+
+            %write('Comparacion de EstrellasH y ESTRELLAS: '), write(RATE), write(' y '), write(EstrellasH), nl,
+            EstrellasH == RATING,
+
+
+            % %write('Comparacion de Sumatoria y PRESUPUESTO: '), write(Sumatoria), write(' y '), write(BUDGET), nl,
+            % Sumatoria =< BUDGET,
+
+            finalhotelweather(DISTANCE, WEATHER, HsimpleAtom, Sumatoria, Nombreh, NDAYS, ROOM, FOOD, VEHICLE). 
+            finalhotelweather(DISTANCE, WEATHER, HsimpleAtom, Sumatoria, Nombreh, NDAYS, ROOM, FOOD, VEHICLE) :-
+            write('******** Suggestion made based by rating ********'), nl,
+            format('
+                        Distance: ~a
+                        Weather: ~a
+                        TotalRoomCost: ~a
+                        TotalCost: ~a
+                        HotelName: ~a
+                        Days: ~a
+                        CostPerRoom: ~a
+                        FoodCost: ~a
+                        Vehiculo: ~a
+
+            ', [DISTANCE, WEATHER, HsimpleAtom, Sumatoria, Nombreh, NDAYS, ROOM, FOOD, VEHICLE]).
