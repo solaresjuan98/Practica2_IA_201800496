@@ -45,7 +45,6 @@
         ),
 
         show_rep1(Customer_name, Customer_lastname, Costumer_country).
-        %menu_reports().
         show_rep1(Customer_name, Customer_lastname, Costumer_country):-
         write(' >> Result:'), nl,
             format('
@@ -53,7 +52,7 @@
                 Lastname: ~a
                 Country: ~a
             ', [Customer_name, Customer_lastname, Costumer_country]), nl, fail, true.
-
+        menu_reports().
 
     % 2. Nombre y estado civil de clientes con reservaciones en hoteles con más de 4 estrellas
     report2:-
@@ -63,7 +62,7 @@
         hotel(Id_hotel,_,_,N_stars,_,_,_,_,_),
         N_stars > 4,
         show_rep2(Customer_name, Customer_lastname, Customer_status).
-        %menu_reports().
+       
         show_rep2(Customer_name, Customer_lastname, Customer_status):-
         write(' >> Result:'), nl,
             format('
@@ -71,7 +70,7 @@
                 ~a
                 ~a
             ', [Customer_name, Customer_lastname, Customer_status]), nl, fail, true.
-
+        menu_reports().
 
     % 3. Nombre de Administradores en hoteles con valoraciones mayor o igual que 5
     report3:-
