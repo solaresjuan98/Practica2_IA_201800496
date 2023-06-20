@@ -23,7 +23,8 @@
         REPORT_OPT == 5 -> report5;
         REPORT_OPT == 6 -> report6;
         REPORT_OPT == 7 -> report7;
-        REPORT_OPT == 8 -> report8
+        REPORT_OPT == 8 -> report8;
+        REPORT_OPT == 9 -> report9
     ).
 
 
@@ -217,3 +218,25 @@
                 CustomerCountry: ~a
             ', [CustomerCountry]), nl, fail, true.
 
+
+    % 9. Nombre de Hotel y dirección de hoteles que recibieron a clientes casados, que
+    % tengan opiniones mayores de 6 por personas con mínimo de 3 días de estadía
+     report9:-
+        write(' ============= Report # 9 ============= '), nl,
+        hotel(IdHotel, HotelName, HotelAddress, NStars, _,_,_,DepId,_),
+        cliente(IdCustomer,_,_,_,_,Civilstate,_),
+        departamento(DepId, DepName, _,DepLang, _,_),
+        registro(_, IdCustomer, IdHotel, _,NDays,Opinion),
+
+        Civilstate=='casado',
+        NDays >= 3,
+        Opinion > 6,
+
+        show_rep9(HotelName, HotelAddress).
+
+        show_rep9(HotelName, HotelAddress) :-
+            write(' >> Result '), nl,
+            format('
+                HotelName: ~a
+                HotelAddress: ~a
+            ', [HotelName, HotelAddress]), nl, fail, true.
