@@ -18,7 +18,8 @@
         REPORT_OPT == 2 -> report2;
         REPORT_OPT == 3 -> report3;
         REPORT_OPT == 4 -> report4;
-        REPORT_OPT == 5 -> report5
+        REPORT_OPT == 5 -> report5;
+        REPORT_OPT == 6 -> report6
     ).
 
 
@@ -142,6 +143,31 @@
             format('
                 Name: ~a 
                 Lastname: ~a 
-                Department: ~a
-            ', [Customer_name,Customer_lastname, DepName]), nl, fail, true.
+            ', [Customer_name,Customer_lastname]), nl, fail, true.
+
+    % 6. Nombre de Hotel, departamento, idioma y Nombre de clientes con opiniones
+    % mayores o igual que 7 y estadías mayores o igual a 3 días
+
+    report6 :-
+        write(' ============= Report # 6 ============= '), nl,
+        cliente(IdCustomer, CustomerName, CustomerLastName,_,_,_,_),
+        departamento(DepId, DepName, _,DepLang, _,_),
+        hotel(IdHotel, HotelName, _, NStars, _,_,_,DepId,_),
+        registro(_, IdCustomer, IdHotel, _,NDays,Opinion),
+
+        Opinion >= 7,
+        NDays >= 3,
+
+        show_rep6(HotelName, DepName, DepLang,CustomerName, CustomerLastName).
+        show_rep6(HotelName, DepName, DepLang,CustomerName, CustomerLastName):-
+            write(' >> Result '), nl,
+            format('
+                HotelName: ~a
+                DepName: ~a
+                Language: ~a
+                Name: ~a 
+                Lastname: ~a 
+            ', [HotelName, DepName, DepLang,CustomerName, CustomerLastName]), nl, fail, true.
+
+
 
