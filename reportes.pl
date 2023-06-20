@@ -16,7 +16,8 @@
     option_report(REPORT_OPT):-(
         REPORT_OPT == 1 -> report1;
         REPORT_OPT == 2 -> report2;
-        REPORT_OPT == 3 -> report3
+        REPORT_OPT == 3 -> report3;
+        REPORT_OPT == 4 -> report4
 
     ).
 
@@ -37,7 +38,7 @@
                 Name: ~a 
                 Lastname: ~a 
                 Country: ~a
-            ', [Customer_name, Customer_lastname, Costumer_country]).
+            ', [Customer_name, Customer_lastname, Costumer_country]), nl, fail, true.
 
 
     % 2. Nombre y estado civil de clientes con reservaciones en hoteles con más de 4 estrellas
@@ -71,9 +72,55 @@
         show_rep3(Employee_name, Employee_occupation, Hotel_id):-
         write(' >> Result: '), nl,
             format('
-                Name ~a 
-                Occupation ~a 
+                Name: ~a 
+                Occupation: ~a 
                 Hotelid: ~a
-            ', [Employee_name, Employee_occupation, Hotel_id]), nl, fail, true.
+            ', [Employee_name, Employee_occupation, Hotel_id]),
+            format('|~`-t~45||~n'),
+            nl, fail, true.
 
-        % hotel(Hotel_id,_,_,_,_,_,_,Hoite)
+    % 4. Departamentos y hotel con más reservaciones, en clima calor
+
+    % Reglas para contar las reservaciones de cada departamento en clima calor
+    count_reservations(Departamento, Count) :-
+        departamento(Departamento, _, _, _, Calor, _),
+        findall(Registro, registro(_, _, Hotel, _, _, _), Registros),
+        count_reservations_helper(Departamento, Registros, Count).
+
+    count_reservations_helper(_, [], 0).
+    count_reservations_helper(Departamento, [registro(_, _, Hotel, _, _, _) | Registros], Count) :-
+        hotel(Hotel, _, _, _, _, _, _, Departamento, _),
+        count_reservations_helper(Departamento, Registros, Count1),
+        Count is Count1 + 1.
+    count_reservations_helper(Departamento, [_ | Registros], Count) :-
+        count_reservations_helper(Departamento, Registros, Count).
+
+    % Regla para obtener el departamento con más reservaciones en clima calor
+    departamento_mas_reservaciones(Departamento, Count) :-
+        departamento(_, Departamento, _, _, Calor, _),
+        findall(Count-Departamento, count_reservations(Departamento, Count), Pares),
+        max_list(Pares, Count-Departamento),
+        format('Departamento con más reservaciones en clima calor: ~w (Reservaciones: ~w)~n', [Departamento, Count]).
+
+    % Regla para obtener el hotel con más reservaciones en clima calor
+    hotel_mas_reservaciones(Hotel, Count) :-
+        hotel(Hotel, _, _, _, _, _, _, Departamento, _),
+        count_reservations(Departamento, Count),
+        findall(Count-Hotel, (hotel(Hotel, _, _, _, _, _, _, D, _), departamento(D, _, _, _, calor, _)), Pares),
+        max_list(Pares, Count-Hotel),
+        format('Hotel con más reservaciones en clima calor: ~w (Reservaciones: ~w)~n', [Hotel, Count]).
+
+    % Departamentos y hotel con más reservaciones, en clima calor
+    report4 :-
+        write(' ============= Report # 4 ============= '), nl,
+        findall(Reservations, registro(_,_,_,_,_,Reservations), ReservationsList),
+        max_list(ReservationsList, MaxReservations),
+        registro(_,_,Id_hotel,_,_,_),
+        hotel(Id_hotel,Hotel_name,_,_,_,_,_,_,_),
+        departamento(Id_department,Department_name,_,_,DepWeather,_),
+        DepWeather == 'calor',
+        show_rep4(Hotel_name, Department_name).
+
+        show_rep4(Hotel_name, Department_name) :-
+            write(' >> Result:'), nl,
+            format('Hotel: ~a~nDepartment: ~a~n', [Hotel_name, Department_name]).
