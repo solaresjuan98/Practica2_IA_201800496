@@ -448,7 +448,8 @@
             \t 2. Search by language
             \t 3. Search by stars
             \t 4. Search by weather
-            \t 5. Select an option:'), nl,
+            \t 5. Reports:
+            \t >> Select an option'), nl,
     read(SELECCION),
     opcion(SELECCION), nl.
 
@@ -456,7 +457,8 @@
         SELECCION == 1 -> budget;
         SELECCION == 2 -> language;
         SELECCION == 3 -> rating;
-        SELECCION == 4 -> weather).
+        SELECCION == 4 -> weather;
+        SELECCION == 5 -> menu_reports).
 
 
     % ? ======================== Budget path ========================
