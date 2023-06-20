@@ -7,8 +7,6 @@
             \t 5. Report 5
             \t 6. Report 6
             \t 7. Report 7
-            \t 8. Report 8
-            \t 9. Report 9
             \t >> Select a report:
         '), nl,
     read(REPORT_OPT),nl,
@@ -185,7 +183,7 @@
 
         CustomerCountry \= 'guatemala',
         DepLang == 'ingles',
-        NDays =< 2,
+        NDays<= 2,
 
         show_rep7(CustomerName,CustomerCountry,HotelName,DepName).
         show_rep7(CustomerName,CustomerCountry,HotelName,DepName):-
@@ -200,13 +198,10 @@
     % 8. naciaonalidad de clientes que reservaron en peten
     report8:-
         write(' ============= Report # 8 ============= '), nl,
-        hotel(IdHotel, HotelName, _, NStars, _,_,_,DepId,_),
         cliente(IdCustomer,CustomerName,CustomerLastName,CustomerCountry,_,_,_),
-        departamento(DepId, DepName, _,DepLang, _,_),
         registro(_, IdCustomer, IdHotel, _,NDays,_),
-        
-        IdCustomer == IdCustomer,
-        DepId==DepId,
+        hotel(IdHotel, HotelName, _, NStars, _,_,_,DepId,_),
+        departamento(DepId, DepName, _,DepLang, _,_),
 
         DepName == 'peten',
 
