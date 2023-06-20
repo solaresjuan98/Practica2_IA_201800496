@@ -35,6 +35,14 @@
         registro(_,Id_customer,_,_,_,Customer_Opinion),
 
         Customer_Opinion > 5,
+        (
+            Costumer_country=='italia'; 
+            Costumer_country=='holanda'; 
+            Costumer_country=='italia'; 
+            Costumer_country=='espanol'; 
+            Costumer_country=='inglaterra';
+            Costumer_country=='espanola'
+        ),
 
         show_rep1(Customer_name, Customer_lastname, Costumer_country).
         %menu_reports().
