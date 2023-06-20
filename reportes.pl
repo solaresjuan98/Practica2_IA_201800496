@@ -19,7 +19,8 @@
         REPORT_OPT == 3 -> report3;
         REPORT_OPT == 4 -> report4;
         REPORT_OPT == 5 -> report5;
-        REPORT_OPT == 6 -> report6
+        REPORT_OPT == 6 -> report6;
+        REPORT_OPT == 7 -> report7
     ).
 
 
@@ -170,4 +171,27 @@
             ', [HotelName, DepName, DepLang,CustomerName, CustomerLastName]), nl, fail, true.
 
 
+    % 7. Nombre País y Nombre de Hotel de clientes extranjeros hospedados en
+    % departamentos de habla inglés, con menos de 2 días de hospedaje
+    report7 :-
+        write(' ============= Report # 7 ============= '), nl,
+        cliente(IdCustomer,CustomerName,CustomerLastName,CustomerCountry,_,_,_),
+        departamento(DepId, DepName, _,DepLang, _,_),
+        hotel(IdHotel, HotelName, _, NStars, _,_,_,DepId,_),
+        registro(_, IdCustomer, IdHotel, _,NDays,_),
 
+        CustomerCountry \= 'guatemala',
+        DepLang == 'ingles',
+        NDays <= 2,
+
+        show_rep7(CustomerName,CustomerCountry,HotelName,DepName).
+        show_rep7(CustomerName,CustomerCountry,HotelName,DepName):-
+            write(' >> Result '), nl,
+            format('
+                CustomerName: ~a
+                CustomerCountry: ~a
+                HotelName: ~a
+                DepName: ~a
+            ', [CustomerName,CustomerCountry,HotelName,DepName]), nl, fail, true.
+
+    % 8. naciaonalidad de clientes que reservaron en peten
