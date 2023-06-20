@@ -17,8 +17,8 @@
         REPORT_OPT == 1 -> report1;
         REPORT_OPT == 2 -> report2;
         REPORT_OPT == 3 -> report3;
-        REPORT_OPT == 4 -> report4
-
+        REPORT_OPT == 4 -> report4;
+        REPORT_OPT == 5 -> report5
     ).
 
 
@@ -124,3 +124,24 @@
         show_rep4(Hotel_name, Department_name) :-
             write(' >> Result:'), nl,
             format('Hotel: ~a~nDepartment: ~a~n', [Hotel_name, Department_name]).
+
+    % 5. Nombre de clientes extranjeros hospedados en departamentos de habla españo
+    report5 :-
+        write(' ============= Report # 5 ============= '), nl,
+        cliente(Id_customer,Customer_name,Customer_lastname,Costumer_country,_,_,_),
+        departamento(_,DepName,_,DepLang,_,_),
+        registro(_,Id_customer,HotelId,_,_,_),
+        hotel(HotelId,_,_,_,_,_,_,_,_),
+
+        DepLang == 'espanol',
+        Costumer_country \= 'guatemala',
+
+        show_rep5(Customer_name,Customer_lastname, DepName).
+        show_rep5(Customer_name,Customer_lastname, DepName):-
+            write(' >> Result: '),nl,
+            format('
+                Name: ~a 
+                Lastname: ~a 
+                Department: ~a
+            ', [Customer_name,Customer_lastname, DepName]), nl, fail, true.
+
