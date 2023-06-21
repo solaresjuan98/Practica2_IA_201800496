@@ -44,7 +44,8 @@
             Costumer_country=='espanola'
         ),
 
-        show_rep1(Customer_name, Customer_lastname, Costumer_country).
+        show_rep1(Customer_name, Customer_lastname, Costumer_country),
+        menu_reports.
         show_rep1(Customer_name, Customer_lastname, Costumer_country):-
         write(' >> Result:'), nl,
             format('
@@ -52,8 +53,7 @@
                 Lastname: ~a
                 Country: ~a
             ', [Customer_name, Customer_lastname, Costumer_country]), nl, fail, true.
-        menu_reports().
-
+        %
     % 2. Nombre y estado civil de clientes con reservaciones en hoteles con más de 4 estrellas
     report2:-
         write(' ============= Report # 2 ============= '), nl,
@@ -70,7 +70,7 @@
                 ~a
                 ~a
             ', [Customer_name, Customer_lastname, Customer_status]), nl, fail, true.
-        menu_reports().
+     
 
     % 3. Nombre de Administradores en hoteles con valoraciones mayor o igual que 5
     report3:-
@@ -136,7 +136,7 @@
 
         show_rep4(Hotel_name, Department_name) :-
             write(' >> Result:'), nl,
-            format('Hotel: ~a~nDepartment: ~a~n', [Hotel_name, Department_name]).
+            format('Hotel: ~a~nDepartment: ~a~n', [Hotel_name, Department_name]), nl, fail, true.
 
     % 5. Nombre de clientes extranjeros hospedados en departamentos de habla españo
     report5 :-
